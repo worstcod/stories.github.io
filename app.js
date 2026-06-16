@@ -2,7 +2,7 @@
 
 // GitHub Repository Configuration (Update this for your site!)
 const GITHUB_CONFIG = {
-  username: "wrostcod", // Replace with your GitHub Username
+  username: "worstcod", // Replace with your GitHub Username
   repo: "stories.github.io"        // Replace with your repository name
 };
 
