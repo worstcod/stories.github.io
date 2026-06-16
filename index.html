@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A simple pixelated, e-ink monochrome stories archive featuring Osho, Zen, Sadhguru, Aesop, and J. Krishnamurti. Designed to be extremely easy on the eyes.">
+  <title>RetroStories | An E-Ink Story Archive</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="logo-group">
+      <h1>RETROSTORIES</h1>
+      <p>ELDER WISDOM ARCHIVE // B&amp;W EDITION</p>
+    </div>
+    <div class="header-controls">
+      <button class="pixel-btn small" id="theme-toggle" title="Toggle dark e-ink mode">[ DARK MODE ]</button>
+      <button class="pixel-btn small" id="font-toggle" title="Toggle serif/monospace font">[ TYPEWRITER FONT ]</button>
+      <button class="pixel-btn small" id="open-sources-btn" title="View story sources">[ SOURCES ]</button>
+      <button class="pixel-btn small" id="font-cycle-btn" title="Cycle font style">[ FONT ]</button>
+      <button class="pixel-btn small" id="open-submit-btn" title="Submit a new story">[ ADD STORY ]</button>
+      <button class="pixel-btn small" id="subscribe-notify-btn" title="Subscribe to daily stories">[ DAILY STORY ]</button>
+    </div>
+  </header>
+
+  <!-- Categories Bar (Top) -->
+  <div class="categories-bar">
+    <span class="cat-label">CATEGORIES:</span>
+    <div class="category-tabs">
+      <button class="cat-tab active" data-category="all">ALL</button>
+      <button class="cat-tab" data-category="flash">FLASH (&lt; 1 MIN)</button>
+      <button class="cat-tab" data-category="mid">MID (1-3 MINS)</button>
+      <button class="cat-tab" data-category="deep">DEEP (3+ MINS)</button>
+    </div>
+  </div>
+
+  <!-- Random Action Selector Bar -->
+  <div class="random-action-bar">
+    <button class="pixel-btn" id="random-story-btn">[ READ RANDOM STORY ]</button>
+    <span class="random-hint">Gets a random unread story from the active category</span>
+  </div>
+
+  <!-- Main Workspace Layout -->
+  <main class="main-layout">
+    
+    <!-- Left Reading Panel -->
+    <section class="reading-panel" id="reading-pane">
+      <!-- Story content loaded here -->
+    </section>
+
+    <!-- Right Sidebar (Filter by Author / Accordion Index) -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h2>STORY INDEX</h2>
+        <input type="text" id="search-box" class="search-box" placeholder="Search title or text...">
+      </div>
+      
+      <!-- Accordion list of Authors -->
+      <div class="accordion-container" id="accordion-list">
+        <!-- Generated Dynamically by app.js -->
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- Mobile Sidebar Floating Toggle -->
+  <button id="mobile-sidebar-toggle" class="pixel-btn mobile-sidebar-toggle">[ OPEN INDEX ]</button>
+
+  <!-- Submit Story Modal Dialog -->
+  <div class="modal-overlay" id="submit-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>SUBMIT STORY</h2>
+        <button class="modal-close" id="close-submit-btn">X</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.85rem; margin-bottom: 1rem; opacity: 0.8; font-style: italic;">
+          Add a story here. Clicking submit will format an email to the owner or create a GitHub Issue for review. Once approved, the story will be published!
+        </p>
+        <form id="story-submit-form">
+          <div class="form-group">
+            <label for="story-title">Story Title*</label>
+            <input type="text" id="story-title" class="form-control" placeholder="e.g. The Empty Boat" required>
+          </div>
+          <div class="form-group">
+            <label for="story-author">Author/Source*</label>
+            <select id="story-author" class="form-control" required>
+              <option value="Zen">Zen</option>
+              <option value="Osho">Osho</option>
+              <option value="Sadhguru">Sadhguru</option>
+              <option value="Aesop">Aesop</option>
+              <option value="J. Krishnamurti">J. Krishnamurti</option>
+              <option value="Other">Other (Specify below)</option>
+            </select>
+          </div>
+          <div class="form-group" id="custom-author-group" style="display: none;">
+            <label for="story-author-custom">Custom Author Name*</label>
+            <input type="text" id="story-author-custom" class="form-control" placeholder="e.g. Rabindranath Tagore">
+          </div>
+          <div class="form-group">
+            <label for="story-content">Story Text Content*</label>
+            <textarea id="story-content" class="form-control" placeholder="Write or paste your story here..." required></textarea>
+          </div>
+          <div class="form-actions" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <button type="submit" class="pixel-btn" id="submit-btn-direct">[ SUBMIT STORY ]</button>
+            <button type="submit" class="pixel-btn" id="submit-btn-github">[ SUBMIT ON GITHUB ]</button>
+          </div>
+        </form>
+        
+        <!-- Code Clipboard Copy Indicator Box -->
+        <pre class="copy-preview-box" id="copy-preview"></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Success Modal -->
+  <div class="modal-overlay" id="notify-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>DAILY STORIES</h2>
+        <button class="modal-close" id="close-notify-btn">X</button>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <p style="font-size: 1.5rem; font-family: var(--font-pixel); margin-bottom: 1rem;">SUBSCRIBED SUCCESSFULLY!</p>
+        <p style="font-size: 0.95rem; margin-bottom: 1.5rem;">
+          You will now receive a daily wisdom story notification on your device. Keep this browser tab open to stay connected.
+        </p>
+        <div style="border: 2px dashed var(--border-color); padding: 1rem; margin-bottom: 1.5rem; background-color: var(--active-bg);">
+          <p style="font-size: 0.85rem; font-style: italic;">
+            Want to test if notifications are working correctly on your system? Click the button below to trigger an immediate test notification.
+          </p>
+        </div>
+        <button class="pixel-btn" id="test-notify-btn">[ TRIGGER TEST NOTIFICATION ]</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sources Overlay Page -->
+  <div class="sources-overlay" id="sources-overlay">
+    <div class="sources-content">
+      <h2>STORY SOURCE DIRECTORY</h2>
+      <p style="font-size: 0.95rem; margin-bottom: 2rem; opacity: 0.8; font-style: italic; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.6;">
+        Out of respect for the authors, compilers, and original platforms, here are the primary sources from which the stories in this archive have been collected:
+      </p>
+      <ul class="sources-list">
+        <li>
+          <span class="source-name">OSHO STORIES BLOG</span>
+          <a href="https://oshostories.wordpress.com/" target="_blank" class="source-link">https://oshostories.wordpress.com/</a>
+        </li>
+        <li>
+          <span class="source-name">OSHO NEWS (1001 TALES)</span>
+          <a href="https://www.oshonews.com/category/osho-quotes/quotes-by-osho/1001-tales/" target="_blank" class="source-link">https://www.oshonews.com/.../1001-tales/</a>
+        </li>
+        <li>
+          <span class="source-name">ASHIDA KIM ZEN KOANS</span>
+          <a href="https://ashidakim.com/zenkoans/zenindex.html" target="_blank" class="source-link">https://ashidakim.com/zenkoans/</a>
+        </li>
+        <li>
+          <span class="source-name">SOTO ZEN SHORT STORIES</span>
+          <a href="https://www.sotozen.com/eng/library/stories/" target="_blank" class="source-link">https://www.sotozen.com/eng/library/stories/</a>
+        </li>
+        <li>
+          <span class="source-name">SADHGURU ZEN STORIES</span>
+          <a href="https://isha.sadhguru.org/en/topic/zen-story" target="_blank" class="source-link">https://isha.sadhguru.org/en/topic/zen-story</a>
+        </li>
+        <li>
+          <span class="source-name">SADHGURU BUDDHA STORIES</span>
+          <a href="https://isha.sadhguru.org/en/wisdom/article/11-intriguing-buddha-stories-by-sadhguru" target="_blank" class="source-link">https://isha.sadhguru.org/.../11-intriguing-buddha-stories-by-sadhguru</a>
+        </li>
+        <li>
+          <span class="source-name">AESOP FABLES ONLINE</span>
+          <a href="https://aesopfables.com/aesopsel.html" target="_blank" class="source-link">https://aesopfables.com/</a>
+        </li>
+        <li>
+          <span class="source-name">AMERICAN LITERATURE (AESOP)</span>
+          <a href="https://americanliterature.com/author/aesop" target="_blank" class="source-link">https://americanliterature.com/author/aesop</a>
+        </li>
+        <li>
+          <span class="source-name">LAURA GIBBS' NASRUDDIN</span>
+          <a href="https://nasruddin.lauragibbs.net/" target="_blank" class="source-link">https://nasruddin.lauragibbs.net/</a>
+        </li>
+      </ul>
+      <button class="pixel-btn" id="close-sources-btn" style="margin-top: 2.5rem;">[ CLOSE ]</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>RETROSTORIES © 2026 // MINIMALIST E-INK DIGITAL LIBRARY // DESIGNED FOR DISTRACTION-FREE READING</p>
+  </footer>
+
+  <!-- Include stories scripts first, then stories index, then core app code -->
+  <script src="stories/osho.js"></script>
+  <script src="stories/zen.js"></script>
+  <script src="stories/jk.js"></script>
+  <script src="stories/sadhguru.js"></script>
+  <script src="stories/aesop.js"></script>
+  <script src="stories/nasruddin.js"></script>
+  <script src="stories-index.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
