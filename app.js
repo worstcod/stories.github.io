@@ -504,7 +504,7 @@ function initSubmissionForm() {
                      finalAuthor.toLowerCase().includes("aesop") ? "aesop.js" :
                      finalAuthor.toLowerCase().includes("krishnamurti") || finalAuthor.toLowerCase().includes("jk") ? "jk.js" : "custom.js";
 
-    const formattedCode = `// Copy and add this block to stories/${filename}:\n{\n  id: "${storyId}",\n  title: "${title}",\n  author: "${finalAuthor}",\n  category: "${autoCategory}",\n  content: \`${content.replace(/`/g, '\\`').replace(/\${/g, '\\${')}\`\n},`;
+    const formattedCode = `// Copy and add this block inside the square brackets [ ... ] of stories/${filename}:\n{\n  "id": "${storyId}",\n  "title": "${title}",\n  "author": "${finalAuthor}",\n  "category": "${autoCategory}",\n  "content": \`${content.replace(/`/g, '\\`').replace(/\${/g, '\\${')}\`\n},`;
     
     // Update copy box
     copyPreview.textContent = formattedCode;
